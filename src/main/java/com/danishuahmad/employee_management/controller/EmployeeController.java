@@ -3,6 +3,8 @@ package com.danishuahmad.employee_management.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,25 +39,25 @@ public class EmployeeController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id){
+    public ResponseEntity<@NotNull EmployeeDTO> getEmployeeById(@PathVariable Long id){
         return employeeService.getEmployeeById(id).map(EmployeeDTO::fromEntity).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody CreateEmployeeDTO request){
+    public ResponseEntity<@NotNull EmployeeDTO> createEmployee(@RequestBody CreateEmployeeDTO request){
         Employee employee = new Employee(null, request.name(), request.department(), request.salary());
         Employee createdEmployee = employeeService.createEmployee(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(EmployeeDTO.fromEntity(createdEmployee));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody UpdateEmployeeDTO request){
+    public ResponseEntity<@NotNull EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody UpdateEmployeeDTO request){
         Employee employee = new Employee(null, request.name(), request.department(), request.salary());
         return employeeService.updateEmployee(id, employee).map(EmployeeDTO::fromEntity).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<@NotNull Void> deleteEmployee(@PathVariable Long id) {
         boolean deleted = employeeService.deleteEmployee(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
