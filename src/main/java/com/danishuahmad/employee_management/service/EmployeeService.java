@@ -10,5 +10,6 @@ public interface EmployeeService {
     Optional<Employee> getEmployeeById(Long id);
     Employee createEmployee(Employee employee);
     Optional<Employee> updateEmployee(Long id, Employee employee);
+    List<Employee> getEmployeesByDepartment(String department);
     boolean deleteEmployee(Long id);
 }

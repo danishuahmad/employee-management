@@ -34,6 +34,7 @@ public class EmployeeController {
 
     @GetMapping
     public List<EmployeeDTO> getAllEmployees(){
+        //return List.of(new EmployeeDTO(1L, "Danish", "Sales", 2000));
         return employeeService.getAllEmployees().stream().map(EmployeeDTO::fromEntity).collect(Collectors.toList());
     }
 
@@ -60,6 +61,14 @@ public class EmployeeController {
     public ResponseEntity<@NotNull Void> deleteEmployee(@PathVariable Long id) {
         boolean deleted = employeeService.deleteEmployee(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/department/{department}")
+    public List<EmployeeDTO> getEmployeesByDepartment(@PathVariable String department) {
+        return employeeService.getEmployeesByDepartment(department).
+                stream().
+                map(EmployeeDTO::fromEntity).
+                collect(Collectors.toList());
     }
     
 }
