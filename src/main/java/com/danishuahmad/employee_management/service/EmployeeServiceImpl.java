@@ -1,8 +1,11 @@
 package com.danishuahmad.employee_management.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.danishuahmad.employee_management.model.dto.DepartmentStatsDTO;
 import org.springframework.stereotype.Service;
 
 import com.danishuahmad.employee_management.model.entity.Employee;
@@ -53,6 +56,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getEmployeesByDepartment(String department) {
-        return employeeRepository.findByDepartment(department);
+        return employeeRepository.findByDepartmentIgnoreCase(department);
+    }
+
+    @Override
+    public List<DepartmentStatsDTO> getDepartmentStats() {
+        List<Employee> allEmployees = employeeRepository.findAll();
+
+        Map<String, Long> countByDept = allEmployees.stream().collect(
+                Collectors.groupingBy(Employee::getDepartment, Collectors.counting())
+        );
+
+        Map<String, Double> averageSalaryByDept = allEmployees.stream().collect(
+                Collectors.groupingBy(Employee::getDepartment, Collectors.averagingInt(Employee::getSalary))
+        );
+
+        return countByDept.keySet().stream().map(
+                dept -> new DepartmentStatsDTO(dept, countByDept.get(dept), averageSalaryByDept.get(dept))
+        ).collect(Collectors.toList());
+
     }
 }

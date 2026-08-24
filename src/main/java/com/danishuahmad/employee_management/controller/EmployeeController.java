@@ -3,6 +3,7 @@ package com.danishuahmad.employee_management.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.danishuahmad.employee_management.model.dto.DepartmentStatsDTO;
 import org.jetbrains.annotations.NotNull;
 
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,11 @@ public class EmployeeController {
                 stream().
                 map(EmployeeDTO::fromEntity).
                 collect(Collectors.toList());
+    }
+
+    @GetMapping("/stats")
+    public List<DepartmentStatsDTO> getDepartmentStats() {
+        return employeeService.getDepartmentStats();
     }
     
 }

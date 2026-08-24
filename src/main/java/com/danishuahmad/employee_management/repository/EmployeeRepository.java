@@ -8,5 +8,5 @@ import com.danishuahmad.employee_management.model.entity.Employee;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<@NotNull Employee, @NotNull Long> {
-    List<Employee> findByDepartment(String department);
+    List<Employee> findByDepartmentIgnoreCase(String department);
 }
