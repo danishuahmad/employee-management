@@ -69,6 +69,18 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void createEmployee_returns400WhenSalaryIsNegative() throws Exception {
+        CreateEmployeeDTO request = new CreateEmployeeDTO("John Doe", "Sales", -5000);
+
+        mockMvc.perform(post("/employees").
+                contentType("application/json").
+                content(objectMapper.writeValueAsString(request))
+
+        ).andExpect(status().isBadRequest()).
+        andExpect(jsonPath("$.errors.salary").value("Salary must be positive"));
+    }
+
+    @Test
     void createEmployee_returns201_withCreatedEmployee() throws Exception {
         CreateEmployeeDTO request = new CreateEmployeeDTO("Mustermann", "Sales", 1000);
         Employee saved = new Employee(1L, "Mustermann", "Sales", 1000);
