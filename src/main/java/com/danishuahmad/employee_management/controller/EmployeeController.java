@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.danishuahmad.employee_management.model.dto.DepartmentStatsDTO;
+import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<@NotNull EmployeeDTO> createEmployee(@RequestBody CreateEmployeeDTO request){
+    public ResponseEntity<@NotNull EmployeeDTO> createEmployee(@Valid @RequestBody CreateEmployeeDTO request){
         Employee employee = new Employee(null, request.name(), request.department(), request.salary());
         Employee createdEmployee = employeeService.createEmployee(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(EmployeeDTO.fromEntity(createdEmployee));
