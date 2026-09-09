@@ -1,10 +1,12 @@
 package com.danishuahmad.employee_management.controller;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 
+import com.danishuahmad.employee_management.model.dto.DepartmentStatsDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -132,6 +134,55 @@ public class EmployeeControllerTest {
     void deleteEmployee_returns404_whenNotFound() throws Exception {
         when(employeeService.deleteEmployee(99L)).thenReturn(false);
         mockMvc.perform(delete("/employees/99")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getEmployeesByDepartment_returnsListWith200() throws Exception {
+        List<Employee> employees = List.of(
+                new Employee(1L, "John", "Sales", 2000),
+                new Employee(2L, "Doe", "HR", 1500)
+        );
+
+        when(employeeService.getEmployeesByDepartment("sales")).thenReturn(List.of(employees.getFirst()));
+
+        mockMvc.perform(get("/employees/department/sales")).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$[0].name").value("John"));
+
+        verify(employeeService).getEmployeesByDepartment("sales");
+    }
+    @Test
+    void getEmployeesByDepartment_returnsEmptyListWith200() throws Exception{
+        when(employeeService.getEmployeesByDepartment("sales")).thenReturn(List.of());
+
+        mockMvc.perform(get("/employees/department/sales")).
+            andExpect(status().isOk()).
+            andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void getDepartmentStats_returnListWith200() throws Exception {
+        List<DepartmentStatsDTO> result = List.of(
+            new DepartmentStatsDTO("hr", 2L, 2150.0),
+            new DepartmentStatsDTO("engineering", 3L, 3600.0)
+        );
+
+        when(employeeService.getDepartmentStats()).thenReturn(result);
+
+        mockMvc.perform(get("/employees/stats")).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$[0].department").value("hr")).
+                andExpect(jsonPath("$[1].employeeCount").value(3L));
+
+        verify(employeeService).getDepartmentStats();
+    }
+    @Test
+    void getDepartmentStats_returnsEmptyListWith200() throws Exception {
+        when(employeeService.getDepartmentStats()).thenReturn(List.of());
+
+        mockMvc.perform(get("/employees/stats")).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$").isEmpty());
     }
 
 }
